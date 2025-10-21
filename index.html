@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danone Cybersecurity Criticality Assessment</title>
+    <style>
+        /* Danone Color Palette */
+        :root {
+            --danone-blue: #0055A5;
+            --danone-light-blue: #00A3E0;
+            --danone-dark-blue: #003D7A;
+            --danone-white: #FFFFFF;
+            --danone-light-gray: #F5F5F5;
+            --danone-gray: #E0E0E0;
+            --danone-dark-gray: #666666;
+            --danone-green: #7AC143;
+            --danone-orange: #FF6B35;
+            --danone-red: #E63946;
+            --danone-yellow: #FFB81C;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--danone-light-blue) 0%, var(--danone-blue) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--danone-white);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--danone-blue);
+            color: var(--danone-white);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--danone-gray);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danone-green) 0%, var(--danone-light-blue) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            color: var(--danone-blue);
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--danone-light-blue);
+            font-weight: 600;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: var(--danone-light-gray);
+            border-radius: 10px;
+            border-left: 5px solid var(--danone-light-blue);
+        }
+
+        .question-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--danone-dark-blue);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .question-help {
+            font-size: 14px;
+            color: var(--danone-dark-gray);
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background: var(--danone-white);
+            border: 2px solid var(--danone-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover {
+            border-color: var(--danone-light-blue);
+            box-shadow: 0 2px 8px rgba(0, 163, 224, 0.2);
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 12px;
+            margin-top: 3px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--danone-blue);
+        }
+
+        .radio-option.selected {
+            border-color: var(--danone-blue);
+            background: rgba(0, 163, 224, 0.05);
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-title {
+            font-weight: 600;
+            color: var(--danone-dark-blue);
+            margin-bottom: 5px;
+        }
+
+        .option-description {
+            font-size: 14px;
+            color: var(--danone-dark-gray);
+            line-height: 1.5;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .score-4 { background: var(--danone-red); color: white; }
+        .score-3 { background: var(--danone-orange); color: white; }
+        .score-2 { background: var(--danone-yellow); color: var(--danone-dark-blue); }
+        .score-1 { background: var(--danone-green); color: white; }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--danone-dark-blue);
+            margin-bottom: 8px;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--danone-gray);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--danone-light-blue);
+        }
+
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--danone-blue);
+            color: var(--danone-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--danone-dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 85, 165, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--danone-gray);
+            color: var(--danone-dark-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--danone-dark-gray);
+            color: var(--danone-white);
+        }
+
+        .btn-success {
+            background: var(--danone-green);
+            color: var(--danone-white);
+        }
+
+        .btn-success:hover {
+            background: #6BA839;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(122, 193, 67, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results {
+            padding: 30px;
+            background: var(--danone-light-gray);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .final-score {
+            font-size: 72px;
+            font-weight: bold;
+            color: var(--danone-blue);
+            margin: 20px 0;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .tier-1 {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.4);
+        }
+
+        .tier-2 {
+            background: linear-gradient(135deg, #FF4500 0%, #FF6347 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 69, 0, 0.4);
+        }
+
+        .tier-3 {
+            background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+            color: var(--danone-dark-blue);
+            box-shadow: 0 5px 20px rgba(255, 165, 0, 0.4);
+        }
+
+        .tier-4 {
+            background: linear-gradient(135deg, #32CD32 0%, #7AC143 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(122, 193, 67, 0.4);
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .score-card {
+            background: var(--danone-white);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--danone-light-blue);
+        }
+
+        .score-card-title {
+            font-size: 14px;
+            color: var(--danone-dark-gray);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .score-card-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--danone-blue);
+        }
+
+        .score-card-weight {
+            font-size: 14px;
+            color: var(--danone-dark-gray);
+            margin-top: 5px;
+        }
+
+        /* Visual Charts Styles */
+        .visual-charts {
+            margin-top: 40px;
+            padding: 30px;
+            background: var(--danone-white);
+            border-radius: 10px;
+        }
+
+        .visual-charts h3 {
+            color: var(--danone-dark-blue);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background: var(--danone-light-gray);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid var(--danone-light-blue);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--danone-dark-blue);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bar-label {
+            min-width: 120px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--danone-dark-blue);
+        }
+
+        .bar-container {
+            flex: 1;
+            height: 30px;
+            background: var(--danone-gray);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 15px;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .bar-fill.level-4 { background: linear-gradient(90deg, var(--danone-red) 0%, #DC143C 100%); }
+        .bar-fill.level-3 { background: linear-gradient(90deg, var(--danone-orange) 0%, #FF6347 100%); }
+        .bar-fill.level-2 { background: linear-gradient(90deg, var(--danone-yellow) 0%, #FFD700 100%); color: var(--danone-dark-blue); }
+        .bar-fill.level-1 { background: linear-gradient(90deg, var(--danone-green) 0%, #7AC143 100%); }
+
+        /* Radar Chart */
+        .radar-chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            background: var(--danone-white);
+            border-radius: 10px;
+            min-height: 600px;
+	    min-width: 600px;
+	    overflow: visible;
+        }
+
+        .radar-chart {
+            position: relative;
+            width: 550px;
+            height: 550px;
+	    overflow: visible;
+	    transform: none;
+	        }
+
+        .radar-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Gauge Chart */
+        .gauge-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+	    min-height: 270px;
+        }
+
+        .gauge {
+            position: relative;
+            width: 300px;
+            height: 200px;
+        }
+
+        .gauge-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .gauge-value {
+            position: absolute;
+            top: 87%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 39px;
+            font-weight: bold;
+            color: var(--danone-blue);
+        }
+
+        .gauge-label {
+            position: absolute;
+            top: 99%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            color: var(--danone-dark-gray);
+            font-weight: 600;
+        }
+
+        /* Impact Matrix */
+        .impact-matrix {
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--danone-white);
+            border-radius: 10px;
+        }
+
+        .impact-matrix h3 {
+            color: var(--danone-dark-blue);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .matrix-item {
+            padding: 30px 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .matrix-item-title {
+            font-size: 14px;
+            margin-bottom: 5px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .matrix-item-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .matrix-item-raw {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 5px;
+        }
+
+        .matrix-item-subtitle {
+            font-size: 13px;
+            opacity: 0.85;
+            font-weight: normal;
+        }
+
+        .matrix-confidentiality {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .matrix-integrity {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .matrix-availability {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .recommendations {
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--danone-white);
+            border-radius: 10px;
+            border-left: 5px solid var(--danone-orange);
+        }
+
+        .recommendations h3 {
+            color: var(--danone-dark-blue);
+            margin-bottom: 15px;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .recommendations li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--danone-dark-gray);
+            line-height: 1.6;
+        }
+
+        .recommendations li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--danone-light-blue);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .alert-info {
+            background: rgba(0, 163, 224, 0.1);
+            border-left: 5px solid var(--danone-light-blue);
+            color: var(--danone-dark-blue);
+        }
+
+        .alert-warning {
+            background: rgba(255, 184, 28, 0.1);
+            border-left: 5px solid var(--danone-yellow);
+            color: var(--danone-dark-blue);
+        }
+
+        .alert-icon {
+            font-size: 24px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .button-group {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .score-breakdown {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .radar-chart {
+                width: 300px;
+                height: 300px;
+            }
+
+            .matrix-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">DANONE</div>
+            <h1>Cybersecurity Criticality Assessment</h1>
+            <p>Application Risk Classification Tool</p>
+        </div>
+
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <!-- Section 0: Application Information -->
+            <div class="section active" id="section0">
+                <h2 class="section-title">Application Information</h2>
+                
+                <div class="alert alert-info">
+                    <span class="alert-icon">ℹ️</span>
+                    <div>
+                        <strong>Welcome to the Danone Cybersecurity Criticality Assessment</strong><br>
+                        This tool will help you classify your application based on data sensitivity, confidentiality, integrity, and availability impacts. The assessment takes approximately 10-15 minutes.
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="appName">Application Name *</label>
+                    <input type="text" id="appName" placeholder="Enter application name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="appOwner">Application Owner *</label>
+                    <input type="text" id="appOwner" placeholder="Enter application owner name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="businessUnit">Business Unit / CBU *</label>
+                    <input type="text" id="businessUnit" placeholder="Enter business unit" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="assessor">Assessor Name *</label>
+                    <input type="text" id="assessor" placeholder="Enter your name" required>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" disabled>Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 1: Data Sensitivity -->
+            <div class="section" id="section1">
+                <h2 class="section-title">1. Data Sensitivity & Classification</h2>
+                
+                <div class="question">
+                    <label class="question-label">What is the highest classification of data processed, stored, or transmitted by this application?</label>
+                    <p class="question-help">Select the most sensitive data type handled by the application</p>
+                    
+                    <div class="radio-group">
+                        <label class="radio-option" onclick="selectOption(this, 'dataSensitivity', 4)">
+                            <input type="radio" name="dataSensitivity" value="4">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    4 - Restricted
+                                    <span class="score-badge score-4">Critical</span>
+                                </div>
+                                <div class="option-description">
+                                    Trade secrets, M&A data, strategic plans, authentication credentials<br>
+                                    <strong>Examples:</strong> Recipe formulations, acquisition targets, master passwords
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'dataSensitivity', 3)">
+                            <input type="radio" name="dataSensitivity" value="3">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    3 - Confidential
+                                    <span class="score-badge score-3">High</span>
+                                </div>
+                                <div class="option-description">
+                                    Personal data (GDPR), financial records, customer data, employee records<br>
+                                    <strong>Examples:</strong> Customer PII, financial statements, HR records
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'dataSensitivity', 2)">
+                            <input type="radio" name="dataSensitivity" value="2">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    2 - Internal
+                                    <span class="score-badge score-2">Medium</span>
+                                </div>
+                                <div class="option-description">
+                                    Internal communications, operational data, non-public business information<br>
+                                    <strong>Examples:</strong> Internal memos, process documentation, vendor lists
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'dataSensitivity', 1)">
+                            <input type="radio" name="dataSensitivity" value="1">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    1 - Public
+                                    <span class="score-badge score-1">Low</span>
+                                </div>
+                                <div class="option-description">
+                                    Marketing materials, public website content, press releases<br>
+                                    <strong>Examples:</strong> Product brochures, public announcements
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 2: Confidentiality Impact -->
+            <div class="section" id="section2">
+                <h2 class="section-title">2. Confidentiality Impact</h2>
+                
+                <div class="alert alert-warning">
+                    <span class="alert-icon">⚠️</span>
+                    <div>
+                        <strong>Scenario:</strong> All data in this application is disclosed to unauthorized parties (e.g., public leak, competitor access, ransomware exfiltration). What would be the WORST impact?
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">Select the highest applicable impact:</label>
+                    
+                    <div class="radio-group">
+                        <label class="radio-option" onclick="selectOption(this, 'confidentiality', 4)">
+                            <input type="radio" name="confidentiality" value="4">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    4 - Critical
+                                    <span class="score-badge score-4">Critical</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>Financial:</strong> >€10M potential loss OR >5% annual revenue<br>
+                                    <strong>Operational:</strong> Systemic company-wide impact, brand destruction<br>
+                                    <strong>Regulatory:</strong> Major GDPR violations (>€20M fine), class action lawsuits
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'confidentiality', 3)">
+                            <input type="radio" name="confidentiality" value="3">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    3 - High
+                                    <span class="score-badge score-3">High</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>Financial:</strong> €1M-€10M potential loss OR 1-5% CBU revenue<br>
+                                    <strong>Operational:</strong> Significant CBU disruption, major customer loss<br>
+                                    <strong>Regulatory:</strong> Regulatory investigations, significant fines (€1M-€20M)
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'confidentiality', 2)">
+                            <input type="radio" name="confidentiality" value="2">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    2 - Medium
+                                    <span class="score-badge score-2">Medium</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>Financial:</strong> €100K-€1M potential loss OR <1% CBU revenue<br>
+                                    <strong>Operational:</strong> Limited operational disruption, customer complaints<br>
+                                    <strong>Regulatory:</strong> Minor regulatory notifications, fines <€1M
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'confidentiality', 1)">
+                            <input type="radio" name="confidentiality" value="1">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    1 - Low
+                                    <span class="score-badge score-1">Low</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>Financial:</strong> <€100K potential loss<br>
+                                    <strong>Operational:</strong> Minimal impact, easily contained<br>
+                                    <strong>Regulatory:</strong> No regulatory implications
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="confidentialityJustification">Please describe the specific impact scenario (optional):</label>
+                    <textarea id="confidentialityJustification" placeholder="Describe the potential impact of data disclosure..."></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 3: Integrity Impact -->
+            <div class="section" id="section3">
+                <h2 class="section-title">3. Integrity Impact</h2>
+                
+                <div class="alert alert-warning">
+                    <span class="alert-icon">⚠️</span>
+                    <div>
+                        <strong>Scenario:</strong> Critical data in this application is modified or corrupted (accidentally or maliciously). What would be the WORST impact on business operations, product safety, or financial systems?
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">If critical data in your application were modified or corrupted, what would be the WORST impact?</label>
+                    <p class="question-help">Consider impacts on: Product Safety, Production (IT/OT), Quality, Financial Systems, Customer Trust</p>
+                    
+                    <div class="radio-group">
+                        <label class="radio-option" onclick="selectOption(this, 'integrity', 4)">
+                            <input type="radio" name="integrity" value="4">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    4 - Critical
+                                    <span class="score-badge score-4">Critical</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>Product Safety:</strong> Consumer safety risk, contamination risk, product recall<br>
+                                    <strong>Production:</strong> Core make-pack-ship stopped >3 days, supply chain collapse<br>
+                                    <strong>Financial:</strong> >€10M loss, major fraud, SOX violations<br>
+                                    <strong>IT Examples:</strong> Recipe systems, ERP master data, financial consolidation<br>
+                                    <strong>OT Examples:</strong> MES, SCADA/DCS, safety systems, production line controls
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'integrity', 3)">
+                            <input type="radio" name="integrity" value="3">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    3 - High
+                                    <span class="score-badge score-3">High</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>Quality:</strong> Quality compliance violations, potential safety issues<br>
+                                    <strong>Production:</strong> Significant disruption 1-3 days, major customer impact<br>
+                                    <strong>Financial:</strong> €1M-€10M loss<br>
+                                    <strong>IT Examples:</strong> WMS, quality lab systems, regional ERP, customer portals<br>
+                                    <strong>OT Examples:</strong> Production scheduling, batch management, equipment monitoring
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'integrity', 2)">
+                            <input type="radio" name="integrity" value="2">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    2 - Medium
+                                    <span class="score-badge score-2">Medium</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>Operations:</strong> Process delays, rework required<br>
+                                    <strong>Quality:</strong> Minor quality deviations (no safety risk)<br>
+                                    <strong>Financial:</strong> €100K-€1M loss<br>
+                                    <strong>IT Examples:</strong> Maintenance systems, training records, procurement<br>
+                                    <strong>OT Examples:</strong> Maintenance scheduling, asset management, spare parts
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'integrity', 1)">
+                            <input type="radio" name="integrity" value="1">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    1 - Low
+                                    <span class="score-badge score-1">Low</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>Impact:</strong> Minimal impact, easily detected and corrected<br>
+                                    <strong>Financial:</strong> <€100K loss<br>
+                                    <strong>Examples:</strong> Employee directory, meeting room booking, non-critical dashboards
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">Does your application data directly affect product formulations, recipes, or manufacturing parameters?</label>
+                    <div class="radio-group">
+                        <label class="radio-option" onclick="selectOption(this, 'affectsProduct', 'yes')">
+                            <input type="radio" name="affectsProduct" value="yes">
+                            <div class="option-content">
+                                <div class="option-title">Yes - Application affects product safety/quality</div>
+                                <div class="option-description">If yes, Score 4 is likely appropriate</div>
+                            </div>
+                        </label>
+                        <label class="radio-option" onclick="selectOption(this, 'affectsProduct', 'no')">
+                            <input type="radio" name="affectsProduct" value="no">
+                            <div class="option-content">
+                                <div class="option-title">No - Application does not affect products</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="integrityJustification">Please describe the specific impact scenario (optional):</label>
+                    <textarea id="integrityJustification" placeholder="Describe what would happen if data were corrupted..."></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 4: Availability Impact -->
+            <div class="section" id="section4">
+                <h2 class="section-title">4. Availability Impact</h2>
+                
+                <div class="alert alert-warning">
+                    <span class="alert-icon">⚠️</span>
+                    <div>
+                        <strong>Scenario:</strong> This application becomes completely unavailable (e.g., ransomware, infrastructure failure, cyber attack). What would be the impact?
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">What is the impact if the application is unavailable?</label>
+                    <p class="question-help">Consider: Recovery Time Objective (RTO), Business Process Impact, Financial Impact</p>
+                    
+                    <div class="radio-group">
+                        <label class="radio-option" onclick="selectOption(this, 'availability', 4)">
+                            <input type="radio" name="availability" value="4">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    4 - Critical
+                                    <span class="score-badge score-4">Critical</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>RTO:</strong> < 4 hours<br>
+                                    <strong>Process:</strong> Make-pack-ship stoppage, >3 days to recover<br>
+                                    <strong>Financial:</strong> >€500K per day revenue loss<br>
+                                    <strong>Examples:</strong> ERP production, MES, order management (peak season)
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'availability', 3)">
+                            <input type="radio" name="availability" value="3">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    3 - High
+                                    <span class="score-badge score-3">High</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>RTO:</strong> 4-24 hours<br>
+                                    <strong>Process:</strong> Significant operational disruption, 1-3 days recovery<br>
+                                    <strong>Financial:</strong> €100K-€500K per day revenue loss<br>
+                                    <strong>Examples:</strong> WMS, customer service portal, supply chain planning
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'availability', 2)">
+                            <input type="radio" name="availability" value="2">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    2 - Medium
+                                    <span class="score-badge score-2">Medium</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>RTO:</strong> 24-72 hours<br>
+                                    <strong>Process:</strong> Moderate disruption, workarounds available<br>
+                                    <strong>Financial:</strong> €10K-€100K per day revenue loss<br>
+                                    <strong>Examples:</strong> HR self-service, expense management
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="radio-option" onclick="selectOption(this, 'availability', 1)">
+                            <input type="radio" name="availability" value="1">
+                            <div class="option-content">
+                                <div class="option-title">
+                                    1 - Low
+                                    <span class="score-badge score-1">Low</span>
+                                </div>
+                                <div class="option-description">
+                                    <strong>RTO:</strong> > 72 hours<br>
+                                    <strong>Process:</strong> Minimal disruption, no critical processes affected<br>
+                                    <strong>Financial:</strong> <€10K per day revenue loss<br>
+                                    <strong>Examples:</strong> Training management, document management
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label class="question-label">Is the RTO (Recovery Time Objective) documented in BCP/DRP?</label>
+                    <div class="radio-group">
+                        <label class="radio-option" onclick="selectOption(this, 'rtoDocumented', 'yes')">
+                            <input type="radio" name="rtoDocumented" value="yes">
+                            <div class="option-content">
+                                <div class="option-title">Yes - RTO is documented</div>
+                            </div>
+                        </label>
+                        <label class="radio-option" onclick="selectOption(this, 'rtoDocumented', 'no')">
+                            <input type="radio" name="rtoDocumented" value="no">
+                            <div class="option-content">
+                                <div class="option-title">No - RTO not documented (Business Impact Analysis required)</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="rtoValue">If documented, what is the RTO in hours? (optional)</label>
+                    <input type="number" id="rtoValue" placeholder="Enter RTO in hours">
+                </div>
+
+                <div class="input-group">
+                    <label for="availabilityJustification">Please describe the specific impact scenario (optional):</label>
+                    <textarea id="availabilityJustification" placeholder="Describe what would happen if the application were unavailable..."></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="calculateResults()">Calculate Results</button>
+                </div>
+            </div>
+
+            <!-- Section 5: Results -->
+            <div class="section" id="section5">
+                <h2 class="section-title">Assessment Results</h2>
+                
+                <div class="results">
+                    <div class="results-header">
+                        <h3>Cybersecurity Criticality Score</h3>
+                        <div class="final-score" id="finalScore">0.00</div>
+                        <div class="tier-badge" id="tierBadge">Tier 4 - Normal</div>
+                    </div>
+
+                    <div class="score-breakdown">
+                        <div class="score-card">
+                            <div class="score-card-title">Data Sensitivity</div>
+                            <div class="score-card-value" id="dataScore">0</div>
+                            <div class="score-card-weight">Weight: 20%</div>
+                        </div>
+                        <div class="score-card">
+                            <div class="score-card-title">Confidentiality Impact</div>
+                            <div class="score-card-value" id="confScore">0</div>
+                            <div class="score-card-weight">Weight: 25%</div>
+                        </div>
+                        <div class="score-card">
+                            <div class="score-card-title">Integrity Impact</div>
+                            <div class="score-card-value" id="integScore">0</div>
+                            <div class="score-card-weight">Weight: 30%</div>
+                        </div>
+                        <div class="score-card">
+                            <div class="score-card-title">Availability Impact</div>
+                            <div class="score-card-value" id="availScore">0</div>
+                            <div class="score-card-weight">Weight: 25%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Charts Section -->
+                <div class="visual-charts">
+                    <h3>📊 Visual Impact Analysis</h3>
+                    
+                    <!-- Bar Charts -->
+                    <div class="charts-grid">
+                        <div class="chart-container">
+                            <div class="chart-title">Impact Scores Comparison</div>
+                            <div class="bar-chart">
+                                <div class="bar-item">
+                                    <div class="bar-label">Data Sensitivity</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" id="barData" style="width: 0%;">0</div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-label">Confidentiality</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" id="barConf" style="width: 0%;">0</div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-label">Integrity</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" id="barInteg" style="width: 0%;">0</div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-label">Availability</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" id="barAvail" style="width: 0%;">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <div class="chart-title">Weighted Contribution to Final Score</div>
+                            <div class="bar-chart">
+                                <div class="bar-item">
+                                    <div class="bar-label">Data (20%)</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" id="barWeightedData" style="width: 0%;">0.00</div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-label">Conf. (25%)</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" id="barWeightedConf" style="width: 0%;">0.00</div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-label">Integ. (30%)</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" id="barWeightedInteg" style="width: 0%;">0.00</div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-label">Avail. (25%)</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" id="barWeightedAvail" style="width: 0%;">0.00</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Radar Chart - 4 dimensions with WEIGHTED scores -->
+                    <div class="chart-container">
+                        <div class="chart-title">Weighted Risk Profile (Contribution to Final Score)</div>
+                        <div class="radar-chart-container">
+                            <div class="radar-chart">
+                                <svg class="radar-svg" id="radarChart" viewBox="-50 -50 550 550">
+                                    <!-- Chart will be drawn by JavaScript -->
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gauge Chart -->
+                    <div class="chart-container">
+                        <div class="chart-title">Overall Criticality Gauge</div>
+                        <div class="gauge-container">
+                            <div class="gauge">
+                                <svg class="gauge-svg" id="gaugeChart" viewBox="0 0 300 200">
+                                    <!-- Gauge will be drawn by JavaScript -->
+                                </svg>
+                                <div class="gauge-value" id="gaugeValue">0.00</div>
+                                <div class="gauge-label" id="gaugeLabel">Normal</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Impact Matrix - CIA Triad with WEIGHTED scores -->
+                <div class="impact-matrix">
+                    <h3>CIA Triad Weighted Impact Summary</h3>
+                    <div class="matrix-grid">
+                        <div class="matrix-item matrix-confidentiality">
+                            <div class="matrix-item-title">CONFIDENTIALITY</div>
+                            <div class="matrix-item-value" id="matrixConf">0.00</div>
+                            <div class="matrix-item-raw" id="matrixConfRaw">Raw Score: 0</div>
+                            <div class="matrix-item-subtitle">Weighted Score (25%)</div>
+                            <div class="matrix-item-subtitle">Unauthorized Disclosure</div>
+                        </div>
+                        <div class="matrix-item matrix-integrity">
+                            <div class="matrix-item-title">INTEGRITY</div>
+                            <div class="matrix-item-value" id="matrixInteg">0.00</div>
+                            <div class="matrix-item-raw" id="matrixIntegRaw">Raw Score: 0</div>
+                            <div class="matrix-item-subtitle">Weighted Score (30%)</div>
+                            <div class="matrix-item-subtitle">Data Corruption</div>
+                        </div>
+                        <div class="matrix-item matrix-availability">
+                            <div class="matrix-item-title">AVAILABILITY</div>
+                            <div class="matrix-item-value" id="matrixAvail">0.00</div>
+                            <div class="matrix-item-raw" id="matrixAvailRaw">Raw Score: 0</div>
+                            <div class="matrix-item-subtitle">Weighted Score (25%)</div>
+                            <div class="matrix-item-subtitle">System Downtime</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommendations" id="recommendations">
+                    <h3>Security Requirements for This Tier</h3>
+                    <ul id="recommendationsList"></ul>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-success" onclick="exportToExcel()">📥 Export to Excel</button>
+                    <button class="btn btn-primary" onclick="window.print()">🖨️ Print Results</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        let currentSection = 0;
+        const totalSections = 5;
+        
+        const assessmentData = {
+            appName: '',
+            appOwner: '',
+            businessUnit: '',
+            assessor: '',
+            assessmentDate: new Date().toISOString().split('T')[0],
+            dataSensitivity: 0,
+            confidentiality: 0,
+            confidentialityJustification: '',
+            integrity: 0,
+            affectsProduct: '',
+            integrityJustification: '',
+            availability: 0,
+            rtoDocumented: '',
+            rtoValue: '',
+            availabilityJustification: '',
+            finalScore: 0,
+            tier: '',
+            tierNumber: 0
+        };
+
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function selectOption(element, fieldName, value) {
+            const group = element.closest('.radio-group');
+            group.querySelectorAll('.radio-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            element.querySelector('input[type="radio"]').checked = true;
+            assessmentData[fieldName] = value;
+        }
+
+        function validateSection() {
+            const section = document.getElementById('section' + currentSection);
+            
+            if (currentSection === 0) {
+                const appName = document.getElementById('appName').value.trim();
+                const appOwner = document.getElementById('appOwner').value.trim();
+                const businessUnit = document.getElementById('businessUnit').value.trim();
+                const assessor = document.getElementById('assessor').value.trim();
+                
+                if (!appName || !appOwner || !businessUnit || !assessor) {
+                    alert('Please fill in all required fields');
+                    return false;
+                }
+                
+                assessmentData.appName = appName;
+                assessmentData.appOwner = appOwner;
+                assessmentData.businessUnit = businessUnit;
+                assessmentData.assessor = assessor;
+            }
+            
+            if (currentSection === 1 && !assessmentData.dataSensitivity) {
+                alert('Please select a data sensitivity classification');
+                return false;
+            }
+            
+            if (currentSection === 2 && !assessmentData.confidentiality) {
+                alert('Please select a confidentiality impact level');
+                return false;
+            }
+            
+            if (currentSection === 3 && !assessmentData.integrity) {
+                alert('Please select an integrity impact level');
+                return false;
+            }
+            
+            if (currentSection === 4 && !assessmentData.availability) {
+                alert('Please select an availability impact level');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function nextSection() {
+            if (!validateSection()) {
+                return;
+            }
+            
+            if (currentSection === 2) {
+                assessmentData.confidentialityJustification = document.getElementById('confidentialityJustification').value;
+            }
+            if (currentSection === 3) {
+                assessmentData.integrityJustification = document.getElementById('integrityJustification').value;
+            }
+            if (currentSection === 4) {
+                assessmentData.availabilityJustification = document.getElementById('availabilityJustification').value;
+                assessmentData.rtoValue = document.getElementById('rtoValue').value;
+            }
+            
+            document.getElementById('section' + currentSection).classList.remove('active');
+            currentSection++;
+            document.getElementById('section' + currentSection).classList.add('active');
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function previousSection() {
+            document.getElementById('section' + currentSection).classList.remove('active');
+            currentSection--;
+            document.getElementById('section' + currentSection).classList.add('active');
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function calculateResults() {
+            if (!validateSection()) {
+                return;
+            }
+            
+            assessmentData.availabilityJustification = document.getElementById('availabilityJustification').value;
+            assessmentData.rtoValue = document.getElementById('rtoValue').value;
+            
+            const dataScore = parseInt(assessmentData.dataSensitivity);
+            const confScore = parseInt(assessmentData.confidentiality);
+            const integScore = parseInt(assessmentData.integrity);
+            const availScore = parseInt(assessmentData.availability);
+            
+            const finalScore = (dataScore * 0.20) + (confScore * 0.25) + (integScore * 0.30) + (availScore * 0.25);
+            
+            assessmentData.finalScore = finalScore.toFixed(2);
+            
+            let tier, tierNumber, tierClass;
+            if (finalScore >= 3.50) {
+                tier = 'Tier 1 - Crown Jewel';
+                tierNumber = 1;
+                tierClass = 'tier-1';
+            } else if (finalScore >= 2.50) {
+                tier = 'Tier 2 - Critical';
+                tierNumber = 2;
+                tierClass = 'tier-2';
+            } else if (finalScore >= 1.50) {
+                tier = 'Tier 3 - Important';
+                tierNumber = 3;
+                tierClass = 'tier-3';
+            } else {
+                tier = 'Tier 4 - Normal';
+                tierNumber = 4;
+                tierClass = 'tier-4';
+            }
+            
+            assessmentData.tier = tier;
+            assessmentData.tierNumber = tierNumber;
+            
+            document.getElementById('finalScore').textContent = finalScore.toFixed(2);
+            document.getElementById('tierBadge').textContent = tier;
+            document.getElementById('tierBadge').className = 'tier-badge ' + tierClass;
+            
+            document.getElementById('dataScore').textContent = dataScore;
+            document.getElementById('confScore').textContent = confScore;
+            document.getElementById('integScore').textContent = integScore;
+            document.getElementById('availScore').textContent = availScore;
+            
+            generateRecommendations(tierNumber);
+            drawVisualizations(dataScore, confScore, integScore, availScore, finalScore, tier);
+            
+            document.getElementById('section' + currentSection).classList.remove('active');
+            currentSection++;
+            document.getElementById('section' + currentSection).classList.add('active');
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function drawVisualizations(dataScore, confScore, integScore, availScore, finalScore, tier) {
+            drawBarCharts(dataScore, confScore, integScore, availScore);
+            drawRadarChart(dataScore, confScore, integScore, availScore);
+            drawGaugeChart(finalScore, tier);
+            updateImpactMatrix(confScore, integScore, availScore);
+        }
+
+        function drawBarCharts(dataScore, confScore, integScore, availScore) {
+            const maxScore = 4;
+            
+            const barData = document.getElementById('barData');
+            const barConf = document.getElementById('barConf');
+            const barInteg = document.getElementById('barInteg');
+            const barAvail = document.getElementById('barAvail');
+            
+            setTimeout(() => {
+                barData.style.width = (dataScore / maxScore * 100) + '%';
+                barData.textContent = dataScore;
+                barData.className = 'bar-fill level-' + dataScore;
+                
+                barConf.style.width = (confScore / maxScore * 100) + '%';
+                barConf.textContent = confScore;
+                barConf.className = 'bar-fill level-' + confScore;
+                
+                barInteg.style.width = (integScore / maxScore * 100) + '%';
+                barInteg.textContent = integScore;
+                barInteg.className = 'bar-fill level-' + integScore;
+                
+                barAvail.style.width = (availScore / maxScore * 100) + '%';
+                barAvail.textContent = availScore;
+                barAvail.className = 'bar-fill level-' + availScore;
+            }, 100);
+            
+            const weightedData = (dataScore * 0.20).toFixed(2);
+            const weightedConf = (confScore * 0.25).toFixed(2);
+            const weightedInteg = (integScore * 0.30).toFixed(2);
+            const weightedAvail = (availScore * 0.25).toFixed(2);
+            
+            const barWeightedData = document.getElementById('barWeightedData');
+            const barWeightedConf = document.getElementById('barWeightedConf');
+            const barWeightedInteg = document.getElementById('barWeightedInteg');
+            const barWeightedAvail = document.getElementById('barWeightedAvail');
+            
+            setTimeout(() => {
+                barWeightedData.style.width = (weightedData / 1.0 * 100) + '%';
+                barWeightedData.textContent = weightedData;
+                barWeightedData.className = 'bar-fill level-' + dataScore;
+                
+                barWeightedConf.style.width = (weightedConf / 1.0 * 100) + '%';
+                barWeightedConf.textContent = weightedConf;
+                barWeightedConf.className = 'bar-fill level-' + confScore;
+                
+                barWeightedInteg.style.width = (weightedInteg / 1.2 * 100) + '%';
+                barWeightedInteg.textContent = weightedInteg;
+                barWeightedInteg.className = 'bar-fill level-' + integScore;
+                
+                barWeightedAvail.style.width = (weightedAvail / 1.0 * 100) + '%';
+                barWeightedAvail.textContent = weightedAvail;
+                barWeightedAvail.className = 'bar-fill level-' + availScore;
+            }, 100);
+        }
+
+        function drawRadarChart(dataScore, confScore, integScore, availScore) {
+            const svg = document.getElementById('radarChart');
+            svg.innerHTML = '';
+            
+            const centerX = 225;
+            const centerY = 225;
+            const maxRadius = 170;
+            
+            // Calculate weighted scores
+            const weightedData = dataScore * 0.20;
+            const weightedConf = confScore * 0.25;
+            const weightedInteg = integScore * 0.30;
+            const weightedAvail = availScore * 0.25;
+            
+            // Max weighted value is 1.2 (4 * 0.30 for integrity)
+            const maxWeighted = 1.2;
+            const levels = 4;
+            
+            // Draw background circles (for weighted scale 0-1.2)
+            const levelValues = [0.3, 0.6, 0.9, 1.2];
+            levelValues.forEach((value, i) => {
+                const radius = (maxRadius / maxWeighted) * value;
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', centerX);
+                circle.setAttribute('cy', centerY);
+                circle.setAttribute('r', radius);
+                circle.setAttribute('fill', 'none');
+                circle.setAttribute('stroke', '#E0E0E0');
+                circle.setAttribute('stroke-width', '2');
+                svg.appendChild(circle);
+                
+                // Add level labels
+                const levelText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                levelText.setAttribute('x', centerX + 5);
+                levelText.setAttribute('y', centerY - radius + 5);
+                levelText.setAttribute('fill', '#999');
+                levelText.setAttribute('font-size', '12');
+                levelText.textContent = value.toFixed(1);
+                svg.appendChild(levelText);
+            });
+            
+            // Define 4 axes with WEIGHTED scores
+            const axes = [
+                { label: 'Data\nSensitivity\n(20%)', angle: -90, score: weightedData, rawScore: dataScore, color: '#0055A5' },
+                { label: 'Confidentiality\n(25%)', angle: 0, score: weightedConf, rawScore: confScore, color: '#667eea' },
+                { label: 'Integrity\n(30%)', angle: 90, score: weightedInteg, rawScore: integScore, color: '#f5576c' },
+                { label: 'Availability\n(25%)', angle: 180, score: weightedAvail, rawScore: availScore, color: '#00f2fe' }
+            ];
+            
+            // Draw axes
+            axes.forEach(axis => {
+                const angleRad = (axis.angle * Math.PI) / 180;
+                const x = centerX + maxRadius * Math.cos(angleRad);
+                const y = centerY + maxRadius * Math.sin(angleRad);
+                
+                // Draw axis line
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', centerX);
+                line.setAttribute('y1', centerY);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#0055A5');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('opacity', '0.3');
+                svg.appendChild(line);
+                
+                // Draw label
+                const labelDistance = maxRadius + 50;
+                const labelX = centerX + labelDistance * Math.cos(angleRad);
+                const labelY = centerY + labelDistance * Math.sin(angleRad);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', labelX);
+                text.setAttribute('y', labelY);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('dominant-baseline', 'middle');
+                text.setAttribute('fill', '#003D7A');
+                text.setAttribute('font-size', '13');
+                text.setAttribute('font-weight', 'bold');
+                
+                // Handle multi-line labels
+                const lines = axis.label.split('\n');
+                lines.forEach((line, index) => {
+                    const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+                    tspan.setAttribute('x', labelX);
+                    tspan.setAttribute('dy', index === 0 ? 0 : 14);
+                    tspan.textContent = line;
+                    text.appendChild(tspan);
+                });
+                
+                svg.appendChild(text);
+            });
+            
+            // Draw data polygon using WEIGHTED scores
+            const points = axes.map(axis => {
+                const angleRad = (axis.angle * Math.PI) / 180;
+                const radius = (axis.score / maxWeighted) * maxRadius;
+                const x = centerX + radius * Math.cos(angleRad);
+                const y = centerY + radius * Math.sin(angleRad);
+                return `${x},${y}`;
+            }).join(' ');
+            
+            const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            polygon.setAttribute('points', points);
+            polygon.setAttribute('fill', '#00A3E0');
+            polygon.setAttribute('fill-opacity', '0.3');
+            polygon.setAttribute('stroke', '#0055A5');
+            polygon.setAttribute('stroke-width', '3');
+            svg.appendChild(polygon);
+            
+            // Draw data points with colors
+            axes.forEach(axis => {
+                const angleRad = (axis.angle * Math.PI) / 180;
+                const radius = (axis.score / maxWeighted) * maxRadius;
+                const x = centerX + radius * Math.cos(angleRad);
+                const y = centerY + radius * Math.sin(angleRad);
+                
+                // Outer circle (colored)
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', '8');
+                circle.setAttribute('fill', axis.color);
+                circle.setAttribute('stroke', '#FFFFFF');
+                circle.setAttribute('stroke-width', '2');
+                svg.appendChild(circle);
+                
+                // Score label - show weighted score
+                const scoreOffsetX = 25 * Math.cos(angleRad);
+                const scoreOffsetY = 25 * Math.sin(angleRad);
+                
+                const scoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                scoreText.setAttribute('x', x + scoreOffsetX);
+                scoreText.setAttribute('y', y + scoreOffsetY);
+                scoreText.setAttribute('text-anchor', 'middle');
+                scoreText.setAttribute('dominant-baseline', 'middle');
+                scoreText.setAttribute('fill', '#0055A5');
+                scoreText.setAttribute('font-size', '16');
+                scoreText.setAttribute('font-weight', 'bold');
+                scoreText.textContent = axis.score.toFixed(2);
+                svg.appendChild(scoreText);
+                
+                // Add raw score in smaller text
+                const rawScoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                rawScoreText.setAttribute('x', x + scoreOffsetX);
+                rawScoreText.setAttribute('y', y + scoreOffsetY + 15);
+                rawScoreText.setAttribute('text-anchor', 'middle');
+                rawScoreText.setAttribute('fill', '#666');
+                rawScoreText.setAttribute('font-size', '11');
+                rawScoreText.textContent = `(${axis.rawScore})`;
+                svg.appendChild(rawScoreText);
+            });
+        }
+
+        function drawGaugeChart(finalScore, tier) {
+            const svg = document.getElementById('gaugeChart');
+            svg.innerHTML = '';
+            
+            const centerX = 150;
+            const centerY = 150;
+            const radius = 120;
+            const startAngle = -180;
+            const endAngle = 0;
+            
+            // Draw background arc
+            const bgArc = describeArc(centerX, centerY, radius, startAngle, endAngle);
+            const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            bgPath.setAttribute('d', bgArc);
+            bgPath.setAttribute('fill', 'none');
+            bgPath.setAttribute('stroke', '#E0E0E0');
+            bgPath.setAttribute('stroke-width', '20');
+            svg.appendChild(bgPath);
+            
+            // Draw colored segments (4 tiers)
+            const segments = [
+                { start: -180, end: -135, color: '#7AC143' }, // 1.0-1.5 (Tier 4)
+                { start: -135, end: -90, color: '#FFB81C' },  // 1.5-2.5 (Tier 3)
+                { start: -90, end: -45, color: '#FF6B35' },   // 2.5-3.5 (Tier 2)
+                { start: -45, end: 0, color: '#E63946' }      // 3.5-4.0 (Tier 1)
+            ];
+            
+            segments.forEach(segment => {
+                const arc = describeArc(centerX, centerY, radius, segment.start, segment.end);
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', arc);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', segment.color);
+                path.setAttribute('stroke-width', '20');
+                path.setAttribute('opacity', '0.7');
+                svg.appendChild(path);
+            });
+            
+            // Draw needle
+            const scoreAngle = startAngle + ((finalScore - 1) / 3) * (endAngle - startAngle);
+            const needleAngleRad = (scoreAngle * Math.PI) / 180;
+            const needleLength = radius - 10;
+            const needleX = centerX + needleLength * Math.cos(needleAngleRad);
+            const needleY = centerY + needleLength * Math.sin(needleAngleRad);
+            
+            const needle = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            needle.setAttribute('x1', centerX);
+            needle.setAttribute('y1', centerY);
+            needle.setAttribute('x2', needleX);
+            needle.setAttribute('y2', needleY);
+            needle.setAttribute('stroke', '#0055A5');
+            needle.setAttribute('stroke-width', '4');
+            needle.setAttribute('stroke-linecap', 'round');
+            svg.appendChild(needle);
+            
+            // Draw center circle
+            const centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            centerCircle.setAttribute('cx', centerX);
+            centerCircle.setAttribute('cy', centerY);
+            centerCircle.setAttribute('r', '8');
+            centerCircle.setAttribute('fill', '#0055A5');
+            svg.appendChild(centerCircle);
+            
+            // Update gauge value and label
+            document.getElementById('gaugeValue').textContent = finalScore;
+            document.getElementById('gaugeLabel').textContent = tier.split(' - ')[1];
+        }
+
+        function describeArc(x, y, radius, startAngle, endAngle) {
+            const start = polarToCartesian(x, y, radius, endAngle);
+            const end = polarToCartesian(x, y, radius, startAngle);
+            const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+            return [
+                'M', start.x, start.y,
+                'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y
+            ].join(' ');
+        }
+
+        function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+            const angleInRadians = (angleInDegrees * Math.PI) / 180.0;
+            return {
+                x: centerX + (radius * Math.cos(angleInRadians)),
+                y: centerY + (radius * Math.sin(angleInRadians))
+            };
+        }
+
+        function updateImpactMatrix(confScore, integScore, availScore) {
+            // Calculate weighted scores
+            const weightedConf = (confScore * 0.25).toFixed(2);
+            const weightedInteg = (integScore * 0.30).toFixed(2);
+            const weightedAvail = (availScore * 0.25).toFixed(2);
+            
+            // Update matrix with weighted scores
+            document.getElementById('matrixConf').textContent = weightedConf;
+            document.getElementById('matrixConfRaw').textContent = `Raw Score: ${confScore}`;
+            
+            document.getElementById('matrixInteg').textContent = weightedInteg;
+            document.getElementById('matrixIntegRaw').textContent = `Raw Score: ${integScore}`;
+            
+            document.getElementById('matrixAvail').textContent = weightedAvail;
+            document.getElementById('matrixAvailRaw').textContent = `Raw Score: ${availScore}`;
+        }
+
+        function generateRecommendations(tier) {
+            const recommendations = {
+                1: [
+                    'MFA with hardware tokens (YubiKey) required for all users',
+                    'Zero-trust architecture with continuous access validation',
+                    'End-to-end encryption with HSM-backed key management',
+                    '24/7 dedicated SOC monitoring with 30-minute response SLA',
+                    'Continuous vulnerability scanning with 7-day remediation for critical issues',
+                    'Real-time data replication with immutable backups (ransomware protection)',
+                    'Annual penetration testing and red team exercises',
+                    'Quarterly full security assessment required',
+                    'Advanced DLP with ML and insider threat detection',
+                    'Application-level network segmentation with zero-trust principles'
+                ],
+                2: [
+                    'MFA required for all users with risk-based authentication',
+                    'Privileged Access Management (PAM) for administrative access',
+                    'Full encryption (at rest and in transit with TLS 1.3)',
+                    '24/7 SOC monitoring with 1-hour response SLA',
+                    'Continuous vulnerability scanning with 14-day remediation for critical issues',
+                    'Daily backups tested monthly with geo-redundant storage',
+                    'Annual penetration testing required',
+                    'Semi-annual full security assessment required',
+                    'DLP on email, endpoints, web, and cloud',
+                    'Network micro-segmentation with IDS/IPS'
+                ],
+                3: [
+                    'MFA required for all users',
+                    'RBAC with least privilege and quarterly access reviews',
+                    'Encryption at rest and in transit (TLS 1.2+)',
+                    'SIEM integration with automated alerting',
+                    'Monthly vulnerability scanning with 30-day remediation for critical issues',
+                    'Daily backups tested quarterly',
+                    'Biennial vulnerability assessment',
+                    'Annual full security assessment required',
+                    'DLP on email and endpoints',
+                    'Standard network micro-segmentation'
+                ],
+                4: [
+                    'SSO (Single Sign-On) with MFA for administrators',
+                    'RBAC with annual access reviews',
+                    'Encryption for sensitive data (AES-256)',
+                    'Basic log collection and review',
+                    'Quarterly vulnerability scanning with 90-day remediation',
+                    'Weekly backups tested annually',
+                    'Self-assessment annually',
+                    'Biennial security review',
+                    'Basic email DLP',
+                    'Standard VLAN segmentation'
+                ]
+            };
+            
+            const list = document.getElementById('recommendationsList');
+            list.innerHTML = '';
+            
+            recommendations[tier].forEach(rec => {
+                const li = document.createElement('li');
+                li.textContent = rec;
+                list.appendChild(li);
+            });
+        }
+
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+            
+            // Calculate weighted scores for export
+            const weightedData = (assessmentData.dataSensitivity * 0.20).toFixed(2);
+            const weightedConf = (assessmentData.confidentiality * 0.25).toFixed(2);
+            const weightedInteg = (assessmentData.integrity * 0.30).toFixed(2);
+            const weightedAvail = (assessmentData.availability * 0.25).toFixed(2);
+            
+            const summaryData = [
+                ['DANONE CYBERSECURITY CRITICALITY ASSESSMENT'],
+                [''],
+                ['Assessment Date:', assessmentData.assessmentDate],
+                [''],
+                ['APPLICATION INFORMATION'],
+                ['Application Name:', assessmentData.appName],
+                ['Application Owner:', assessmentData.appOwner],
+                ['Business Unit / CBU:', assessmentData.businessUnit],
+                ['Assessor Name:', assessmentData.assessor],
+                [''],
+                ['FINAL RESULTS'],
+                ['Cybersecurity Criticality Score:', assessmentData.finalScore],
+                ['Tier Classification:', assessmentData.tier],
+                [''],
+                ['ASSESSMENT SCORES'],
+                ['Dimension', 'Raw Score (1-4)', 'Weight', 'Weighted Score', 'Impact Level'],
+                ['Data Sensitivity', assessmentData.dataSensitivity, '20%', weightedData, getImpactLevel(assessmentData.dataSensitivity)],
+                ['Confidentiality Impact', assessmentData.confidentiality, '25%', weightedConf, getImpactLevel(assessmentData.confidentiality)],
+                ['Integrity Impact', assessmentData.integrity, '30%', weightedInteg, getImpactLevel(assessmentData.integrity)],
+                ['Availability Impact', assessmentData.availability, '25%', weightedAvail, getImpactLevel(assessmentData.availability)],
+                [''],
+                ['CIA TRIAD WEIGHTED SUMMARY'],
+                ['Confidentiality (Weighted):', weightedConf, '(Raw:', assessmentData.confidentiality + ')'],
+                ['Integrity (Weighted):', weightedInteg, '(Raw:', assessmentData.integrity + ')'],
+                ['Availability (Weighted):', weightedAvail, '(Raw:', assessmentData.availability + ')'],
+                [''],
+                ['ADDITIONAL INFORMATION'],
+                ['Affects Product Safety/Quality:', assessmentData.affectsProduct || 'Not specified'],
+                ['RTO Documented:', assessmentData.rtoDocumented || 'Not specified'],
+                ['RTO Value (hours):', assessmentData.rtoValue || 'Not specified'],
+            ];
+            
+            const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+            wsSummary['!cols'] = [{ wch: 35 }, { wch: 25 }, { wch: 15 }, { wch: 18 }, { wch: 20 }];
+            
+            XLSX.utils.book_append_sheet(wb, wsSummary, 'Assessment Summary');
+            
+            const justificationsData = [
+                ['ASSESSMENT JUSTIFICATIONS'],
+                [''],
+                ['CONFIDENTIALITY IMPACT'],
+                ['Raw Score:', assessmentData.confidentiality],
+                ['Weighted Score:', weightedConf, '(25% weight)'],
+                ['Impact Level:', getImpactLevel(assessmentData.confidentiality)],
+                ['Justification:', assessmentData.confidentialityJustification || 'Not provided'],
+                [''],
+                ['INTEGRITY IMPACT'],
+                ['Raw Score:', assessmentData.integrity],
+                ['Weighted Score:', weightedInteg, '(30% weight)'],
+                ['Impact Level:', getImpactLevel(assessmentData.integrity)],
+                ['Affects Product Safety/Quality:', assessmentData.affectsProduct || 'Not specified'],
+                ['Justification:', assessmentData.integrityJustification || 'Not provided'],
+                [''],
+                ['AVAILABILITY IMPACT'],
+                ['Raw Score:', assessmentData.availability],
+                ['Weighted Score:', weightedAvail, '(25% weight)'],
+                ['Impact Level:', getImpactLevel(assessmentData.availability)],
+                ['RTO Documented:', assessmentData.rtoDocumented || 'Not specified'],
+                ['RTO Value (hours):', assessmentData.rtoValue || 'Not specified'],
+                ['Justification:', assessmentData.availabilityJustification || 'Not provided'],
+            ];
+            
+            const wsJustifications = XLSX.utils.aoa_to_sheet(justificationsData);
+            wsJustifications['!cols'] = [{ wch: 30 }, { wch: 80 }];
+            
+            XLSX.utils.book_append_sheet(wb, wsJustifications, 'Justifications');
+            
+            const tier = assessmentData.tierNumber;
+            const requirements = getSecurityRequirements(tier);
+            
+            const requirementsData = [
+                ['SECURITY REQUIREMENTS'],
+                [''],
+                ['Tier Classification:', assessmentData.tier],
+                [''],
+                ['Required Security Controls:'],
+                ['#', 'Control Requirement']
+            ];
+            
+            requirements.forEach((req, index) => {
+                requirementsData.push([index + 1, req]);
+            });
+            
+            const wsRequirements = XLSX.utils.aoa_to_sheet(requirementsData);
+            wsRequirements['!cols'] = [{ wch: 5 }, { wch: 100 }];
+            
+            XLSX.utils.book_append_sheet(wb, wsRequirements, 'Security Requirements');
+            
+            const breakdownData = [
+                ['SCORE BREAKDOWN AND CALCULATION'],
+                [''],
+                ['Dimension', 'Raw Score', 'Weight', 'Calculation', 'Weighted Score'],
+                ['Data Sensitivity', assessmentData.dataSensitivity, '20%', `${assessmentData.dataSensitivity} × 0.20`, weightedData],
+                ['Confidentiality Impact', assessmentData.confidentiality, '25%', `${assessmentData.confidentiality} × 0.25`, weightedConf],
+                ['Integrity Impact', assessmentData.integrity, '30%', `${assessmentData.integrity} × 0.30`, weightedInteg],
+                ['Availability Impact', assessmentData.availability, '25%', `${assessmentData.availability} × 0.25`, weightedAvail],
+                [''],
+                ['TOTAL CYBERSECURITY CRITICALITY SCORE:', '', '', '', assessmentData.finalScore],
+                [''],
+                ['TIER CLASSIFICATION THRESHOLDS:'],
+                ['Tier 1 - Crown Jewel', '3.50 - 4.00', '', '', assessmentData.finalScore >= 3.50 ? '✓ YOUR TIER' : ''],
+                ['Tier 2 - Critical', '2.50 - 3.49', '', '', (assessmentData.finalScore >= 2.50 && assessmentData.finalScore < 3.50) ? '✓ YOUR TIER' : ''],
+                ['Tier 3 - Important', '1.50 - 2.49', '', '', (assessmentData.finalScore >= 1.50 && assessmentData.finalScore < 2.50) ? '✓ YOUR TIER' : ''],
+                ['Tier 4 - Normal', '1.00 - 1.49', '', '', assessmentData.finalScore < 1.50 ? '✓ YOUR TIER' : ''],
+            ];
+            
+            const wsBreakdown = XLSX.utils.aoa_to_sheet(breakdownData);
+            wsBreakdown['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 10 }, { wch: 20 }, { wch: 18 }];
+            
+            XLSX.utils.book_append_sheet(wb, wsBreakdown, 'Score Breakdown');
+            
+            const filename = `Danone_CyberSecurity_Assessment_${assessmentData.appName.replace(/[^a-z0-9]/gi, '_')}_${assessmentData.assessmentDate}.xlsx`;
+            
+            XLSX.writeFile(wb, filename);
+        }
+
+        function getImpactLevel(score) {
+            const levels = {
+                4: 'Critical',
+                3: 'High',
+                2: 'Medium',
+                1: 'Low'
+            };
+            return levels[score] || 'Unknown';
+        }
+
+        function getSecurityRequirements(tier) {
+            const requirements = {
+                1: [
+                    'MFA with hardware tokens (YubiKey) required for all users',
+                    'Zero-trust architecture with continuous access validation',
+                    'End-to-end encryption with HSM-backed key management',
+                    '24/7 dedicated SOC monitoring with 30-minute response SLA',
+                    'Continuous vulnerability scanning with 7-day remediation for critical issues',
+                    'Real-time data replication with immutable backups (ransomware protection)',
+                    'Annual penetration testing and red team exercises',
+                    'Quarterly full security assessment required',
+                    'Advanced DLP with ML and insider threat detection',
+                    'Application-level network segmentation with zero-trust principles'
+                ],
+                2: [
+                    'MFA required for all users with risk-based authentication',
+                    'Privileged Access Management (PAM) for administrative access',
+                    'Full encryption (at rest and in transit with TLS 1.3)',
+                    '24/7 SOC monitoring with 1-hour response SLA',
+                    'Continuous vulnerability scanning with 14-day remediation for critical issues',
+                    'Daily backups tested monthly with geo-redundant storage',
+                    'Annual penetration testing required',
+                    'Semi-annual full security assessment required',
+                    'DLP on email, endpoints, web, and cloud',
+                    'Network micro-segmentation with IDS/IPS'
+                ],
+                3: [
+                    'MFA required for all users',
+                    'RBAC with least privilege and quarterly access reviews',
+                    'Encryption at rest and in transit (TLS 1.2+)',
+                    'SIEM integration with automated alerting',
+                    'Monthly vulnerability scanning with 30-day remediation for critical issues',
+                    'Daily backups tested quarterly',
+                    'Biennial vulnerability assessment',
+                    'Annual full security assessment required',
+                    'DLP on email and endpoints',
+                    'Standard network micro-segmentation'
+                ],
+                4: [
+                    'SSO (Single Sign-On) with MFA for administrators',
+                    'RBAC with annual access reviews',
+                    'Encryption for sensitive data (AES-256)',
+                    'Basic log collection and review',
+                    'Quarterly vulnerability scanning with 90-day remediation',
+                    'Weekly backups tested annually',
+                    'Self-assessment annually',
+                    'Biennial security review',
+                    'Basic email DLP',
+                    'Standard VLAN segmentation'
+                ]
+            };
+            return requirements[tier] || [];
+        }
+
+        updateProgress();
+    </script>
+</body>
+</html>
