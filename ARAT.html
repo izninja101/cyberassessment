@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Security Assessment - PPT Generator</title>
+    <style>
+        :root {
+            --danone-blue: #0055A5;
+            --danone-light-blue: #00A3E0;
+            --danone-dark-blue: #003D7A;
+            --danone-white: #FFFFFF;
+            --danone-light-gray: #F5F5F5;
+            --danone-gray: #E0E0E0;
+            --danone-dark-gray: #666666;
+            --danone-green: #7AC143;
+            --danone-orange: #FF6B35;
+            --danone-red: #E63946;
+            --danone-yellow: #FFB81C;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--danone-light-blue) 0%, var(--danone-blue) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--danone-white);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--danone-blue);
+            color: var(--danone-white);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--danone-gray);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danone-green) 0%, var(--danone-light-blue) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            color: var(--danone-blue);
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--danone-light-blue);
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--danone-dark-blue);
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--danone-gray);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--danone-light-blue);
+        }
+
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .input-group small {
+            display: block;
+            margin-top: 5px;
+            color: var(--danone-dark-gray);
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--danone-blue);
+            color: var(--danone-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--danone-dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 85, 165, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--danone-gray);
+            color: var(--danone-dark-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--danone-dark-gray);
+            color: var(--danone-white);
+        }
+
+        .btn-success {
+            background: var(--danone-green);
+            color: var(--danone-white);
+        }
+
+        .btn-success:hover {
+            background: #6BA839;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(122, 193, 67, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .alert-info {
+            background: rgba(0, 163, 224, 0.1);
+            border-left: 5px solid var(--danone-light-blue);
+            color: var(--danone-dark-blue);
+        }
+
+        .alert-icon {
+            font-size: 24px;
+        }
+
+        .score-preview {
+            text-align: center;
+            padding: 30px;
+            background: var(--danone-light-gray);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .score-value {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .score-label {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .score-excellent { color: #22c55e; }
+        .score-strong { color: #7AC143; }
+        .score-moderate { color: #FFB81C; }
+        .score-needs-improvement { color: #FF6B35; }
+        .score-critical { color: #E63946; }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: var(--danone-light-gray);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid var(--danone-gray);
+            border-top: 4px solid var(--danone-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">DANONE</div>
+            <h1>Vendor Security Assessment</h1>
+            <p>PowerPoint Report Generator</p>
+        </div>
+
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <!-- Section 0: Introduction -->
+            <div class="section active" id="section0">
+                <h2 class="section-title">Welcome</h2>
+                
+                <div class="alert alert-info">
+                    <span class="alert-icon">ℹ️</span>
+                    <div>
+                        <strong>Vendor Security Assessment Tool</strong><br>
+                        This tool will guide you through collecting vendor security information and generate a professional PowerPoint presentation. The assessment takes approximately 15-20 minutes.
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="assessorName">Assessor Name *</label>
+                    <input type="text" id="assessorName" placeholder="Enter your name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="assessmentDate">Assessment Date *</label>
+                    <input type="date" id="assessmentDate" required>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" disabled>Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Start Assessment</button>
+                </div>
+            </div>
+
+            <!-- Section 1: Vendor Information -->
+            <div class="section" id="section1">
+                <h2 class="section-title">1. Vendor Information</h2>
+
+                <div class="input-group">
+                    <label for="vendorName">Vendor Name *</label>
+                    <input type="text" id="vendorName" placeholder="e.g., Infor" required>
+                    <small>Official name of the vendor/supplier</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="applicationName">Application Name *</label>
+                    <input type="text" id="applicationName" placeholder="e.g., Cybele" required>
+                    <small>Name of the application being assessed</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="applicationDescription">Application Description *</label>
+                    <textarea id="applicationDescription" placeholder="Describe the application's purpose and functionality..." required></textarea>
+                    <small>Brief description of what the application does and its business purpose</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="applicationCategory">Application Category *</label>
+                    <select id="applicationCategory" required>
+                        <option value="">Select category...</option>
+                        <option value="Manufacturing Execution System (MES)">Manufacturing Execution System (MES)</option>
+                        <option value="Product Lifecycle Management (PLM)">Product Lifecycle Management (PLM)</option>
+                        <option value="Enterprise Resource Planning (ERP)">Enterprise Resource Planning (ERP)</option>
+                        <option value="Customer Relationship Management (CRM)">Customer Relationship Management (CRM)</option>
+                        <option value="Supply Chain Management">Supply Chain Management</option>
+                        <option value="Quality Management System">Quality Management System</option>
+                        <option value="Financial Management">Financial Management</option>
+                        <option value="Human Resources">Human Resources</option>
+                        <option value="Business Intelligence">Business Intelligence</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 2: Vendor Profile -->
+            <div class="section" id="section2">
+                <h2 class="section-title">2. Vendor Profile</h2>
+
+                <div class="input-group">
+                    <label for="vendorDescription">Vendor Description *</label>
+                    <textarea id="vendorDescription" placeholder="Describe the vendor's business, specialization, and market position..." required></textarea>
+                    <small>e.g., "Global enterprise software provider specializing in industry-specific cloud applications"</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="vendorCustomerBase">Customer Base *</label>
+                    <input type="text" id="vendorCustomerBase" placeholder="e.g., Over 65,000 customers worldwide" required>
+                    <small>Number of customers and geographic reach</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="vendorIndustryFocus">Industry Focus *</label>
+                    <input type="text" id="vendorIndustryFocus" placeholder="e.g., Food & beverage, manufacturing, healthcare" required>
+                    <small>Industries the vendor serves</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="vendorSolutionDetails">Solution Details *</label>
+                    <textarea id="vendorSolutionDetails" placeholder="Describe the specific solution and its key features..." required></textarea>
+                    <small>Details about the specific product/solution being used</small>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 3: Current Deployment Status -->
+            <div class="section" id="section3">
+                <h2 class="section-title">3. Current Deployment Status</h2>
+
+                <div class="input-group">
+                    <label for="deploymentStatus">Deployment Status *</label>
+                    <select id="deploymentStatus" required>
+                        <option value="">Select status...</option>
+                        <option value="Production - Global">Production - Global</option>
+                        <option value="Production - Regional">Production - Regional</option>
+                        <option value="Production - Limited">Production - Limited (specific locations)</option>
+                        <option value="Pilot/Testing">Pilot/Testing</option>
+                        <option value="Implementation in Progress">Implementation in Progress</option>
+                        <option value="Planned">Planned</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="deploymentDetails">Deployment Details *</label>
+                    <textarea id="deploymentDetails" placeholder="Provide details about deployment scope, locations, monitoring..." required></textarea>
+                    <small>e.g., "Limited to 2 locations with close monitoring"</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="numberOfUsers">Number of Users</label>
+                    <input type="number" id="numberOfUsers" placeholder="e.g., 500">
+                    <small>Approximate number of active users</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="deploymentModel">Deployment Model *</label>
+                    <select id="deploymentModel" required>
+                        <option value="">Select model...</option>
+                        <option value="Cloud (SaaS)">Cloud (SaaS)</option>
+                        <option value="On-Premise">On-Premise</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Managed Service">Managed Service</option>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 4: Assessment Summary -->
+            <div class="section" id="section4">
+                <h2 class="section-title">4. Assessment Summary</h2>
+
+                <div class="input-group">
+                    <label for="overallPosture">Overall Security Posture *</label>
+                    <select id="overallPosture" required>
+                        <option value="">Select posture...</option>
+                        <option value="Excellent">Excellent</option>
+                        <option value="Strong">Strong</option>
+                        <option value="Adequate">Adequate</option>
+                        <option value="Needs Improvement">Needs Improvement</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="risksIdentified">Number of Risks Identified *</label>
+                    <input type="number" id="risksIdentified" placeholder="e.g., 3" required>
+                </div>
+
+                <div class="two-column">
+                    <div class="input-group">
+                        <label for="criticalRisks">Critical Risks</label>
+                        <input type="number" id="criticalRisks" placeholder="0" value="0">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="highRisks">High Risks</label>
+                        <input type="number" id="highRisks" placeholder="0" value="0">
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div class="input-group">
+                        <label for="mediumRisks">Medium Risks</label>
+                        <input type="number" id="mediumRisks" placeholder="0" value="0">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="lowRisks">Low Risks</label>
+                        <input type="number" id="lowRisks" placeholder="0" value="0">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 5: CIA Triad Levels -->
+            <div class="section" id="section5">
+                <h2 class="section-title">5. CIA Triad Assessment</h2>
+
+                <div class="input-group">
+                    <label for="confidentialityLevel">Data Confidentiality Level *</label>
+                    <select id="confidentialityLevel" required>
+                        <option value="">Select level...</option>
+                        <option value="Public">Public</option>
+                        <option value="Internal">Internal</option>
+                        <option value="Confidential">Confidential</option>
+                        <option value="Restricted">Restricted</option>
+                    </select>
+                    <small>Highest classification of data processed by the application</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="integrityLevel">Data Integrity Level *</label>
+                    <select id="integrityLevel" required>
+                        <option value="">Select level...</option>
+                        <option value="Low">Low - Minimal impact if data is modified</option>
+                        <option value="Medium">Medium - Moderate impact, rework required</option>
+                        <option value="High">High - Significant disruption, quality issues</option>
+                        <option value="Critical">Critical - Product safety risk, recalls possible</option>
+                    </select>
+                    <small>Impact if data is corrupted or modified</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="availabilityLevel">Availability Level *</label>
+                    <select id="availabilityLevel" required>
+                        <option value="">Select level...</option>
+                        <option value="Low">Low - RTO > 72 hours</option>
+                        <option value="Medium">Medium - RTO 24-72 hours</option>
+                        <option value="High">High - RTO 4-24 hours</option>
+                        <option value="Business Critical">Business Critical - RTO < 4 hours</option>
+                    </select>
+                    <small>Impact if application becomes unavailable</small>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 6: Application Criticality -->
+            <div class="section" id="section6">
+                <h2 class="section-title">6. Application Criticality</h2>
+
+                <div class="input-group">
+                    <label for="applicationCriticality">Application Criticality (as declared by Application Owner) *</label>
+                    <select id="applicationCriticality" required>
+                        <option value="">Select criticality...</option>
+                        <option value="Crown Jewel">Crown Jewel</option>
+                        <option value="Critical">Critical</option>
+                        <option value="Important">Important</option>
+                        <option value="Normal">Normal</option>
+                    </select>
+                    <small>Business criticality classification from the application owner</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="riskRegisterId">Risk Register ID</label>
+                    <input type="text" id="riskRegisterId" placeholder="e.g., CR-00000004">
+                    <small>Reference ID in the Risk Register (if applicable)</small>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Next</button>
+                </div>
+            </div>
+
+            <!-- Section 7: Vendor Weighted Security Score -->
+            <div class="section" id="section7">
+                <h2 class="section-title">7. Vendor Weighted Security Score</h2>
+
+                <div class="alert alert-info">
+                    <span class="alert-icon">📊</span>
+                    <div>
+                        <strong>Security Score Input</strong><br>
+                        Enter the overall weighted security score calculated from your vendor assessment. This should be based on the control domains evaluated (Asset Management, Identity & Access Control, Data Security, etc.).
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="securityScore">Overall Weighted Security Score (%) *</label>
+                    <input type="number" id="securityScore" min="0" max="100" step="0.01" placeholder="e.g., 85.14" required>
+                    <small>Enter the percentage score (0-100)</small>
+                </div>
+
+                <div class="score-preview" id="scorePreview" style="display: none;">
+                    <div>Security Score:</div>
+                    <div class="score-value" id="scoreDisplay">0%</div>
+                    <div class="score-label" id="scoreLabel"></div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection()">Review & Generate</button>
+                </div>
+            </div>
+
+            <!-- Section 8: Review & Generate -->
+            <div class="section" id="section8">
+                <h2 class="section-title">8. Review & Generate</h2>
+
+                <div class="alert alert-info">
+                    <span class="alert-icon">✅</span>
+                    <div>
+                        <strong>Ready to Generate</strong><br>
+                        Review your inputs and click "Generate PowerPoint" to create your presentation.
+                    </div>
+                </div>
+
+                <div id="reviewSummary" style="background: var(--danone-light-gray); padding: 20px; border-radius: 10px; margin-top: 20px;">
+                    <!-- Summary will be populated by JavaScript -->
+                </div>
+
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Generating PowerPoint presentation...</p>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="previousSection()">Previous</button>
+                    <button class="btn btn-success" onclick="generatePowerPoint()" id="generateBtn">📥 Generate PowerPoint</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load PptxGenJS from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    
+    <script>
+        let currentSection = 0;
+        const totalSections = 8;
+        
+        const assessmentData = {
+            assessorName: '',
+            assessmentDate: '',
+            vendorName: '',
+            applicationName: '',
+            applicationDescription: '',
+            applicationCategory: '',
+            vendorDescription: '',
+            vendorCustomerBase: '',
+            vendorIndustryFocus: '',
+            vendorSolutionDetails: '',
+            deploymentStatus: '',
+            deploymentDetails: '',
+            numberOfUsers: '',
+            deploymentModel: '',
+            overallPosture: '',
+            risksIdentified: 0,
+            criticalRisks: 0,
+            highRisks: 0,
+            mediumRisks: 0,
+            lowRisks: 0,
+            confidentialityLevel: '',
+            integrityLevel: '',
+            availabilityLevel: '',
+            applicationCriticality: '',
+            riskRegisterId: '',
+            securityScore: 0
+        };
+
+        // Set today's date as default
+        document.getElementById('assessmentDate').valueAsDate = new Date();
+
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function validateSection() {
+            const section = document.getElementById('section' + currentSection);
+            const requiredInputs = section.querySelectorAll('[required]');
+            
+            for (let input of requiredInputs) {
+                if (!input.value.trim()) {
+                    alert('Please fill in all required fields');
+                    input.focus();
+                    return false;
+                }
+            }
+            
+            saveCurrentSectionData();
+            return true;
+        }
+
+        function saveCurrentSectionData() {
+            if (currentSection === 0) {
+                assessmentData.assessorName = document.getElementById('assessorName').value;
+                assessmentData.assessmentDate = document.getElementById('assessmentDate').value;
+            }
+            if (currentSection === 1) {
+                assessmentData.vendorName = document.getElementById('vendorName').value;
+                assessmentData.applicationName = document.getElementById('applicationName').value;
+                assessmentData.applicationDescription = document.getElementById('applicationDescription').value;
+                assessmentData.applicationCategory = document.getElementById('applicationCategory').value;
+            }
+            if (currentSection === 2) {
+                assessmentData.vendorDescription = document.getElementById('vendorDescription').value;
+                assessmentData.vendorCustomerBase = document.getElementById('vendorCustomerBase').value;
+                assessmentData.vendorIndustryFocus = document.getElementById('vendorIndustryFocus').value;
+                assessmentData.vendorSolutionDetails = document.getElementById('vendorSolutionDetails').value;
+            }
+            if (currentSection === 3) {
+                assessmentData.deploymentStatus = document.getElementById('deploymentStatus').value;
+                assessmentData.deploymentDetails = document.getElementById('deploymentDetails').value;
+                assessmentData.numberOfUsers = document.getElementById('numberOfUsers').value;
+                assessmentData.deploymentModel = document.getElementById('deploymentModel').value;
+            }
+            if (currentSection === 4) {
+                assessmentData.overallPosture = document.getElementById('overallPosture').value;
+                assessmentData.risksIdentified = parseInt(document.getElementById('risksIdentified').value);
+                assessmentData.criticalRisks = parseInt(document.getElementById('criticalRisks').value) || 0;
+                assessmentData.highRisks = parseInt(document.getElementById('highRisks').value) || 0;
+                assessmentData.mediumRisks = parseInt(document.getElementById('mediumRisks').value) || 0;
+                assessmentData.lowRisks = parseInt(document.getElementById('lowRisks').value) || 0;
+            }
+            if (currentSection === 5) {
+                assessmentData.confidentialityLevel = document.getElementById('confidentialityLevel').value;
+                assessmentData.integrityLevel = document.getElementById('integrityLevel').value;
+                assessmentData.availabilityLevel = document.getElementById('availabilityLevel').value;
+            }
+            if (currentSection === 6) {
+                assessmentData.applicationCriticality = document.getElementById('applicationCriticality').value;
+                assessmentData.riskRegisterId = document.getElementById('riskRegisterId').value;
+            }
+            if (currentSection === 7) {
+                assessmentData.securityScore = parseFloat(document.getElementById('securityScore').value);
+            }
+        }
+
+        function nextSection() {
+            if (!validateSection()) {
+                return;
+            }
+            
+            document.getElementById('section' + currentSection).classList.remove('active');
+            currentSection++;
+            
+            if (currentSection === 8) {
+                displayReviewSummary();
+            }
+            
+            document.getElementById('section' + currentSection).classList.add('active');
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function previousSection() {
+            saveCurrentSectionData();
+            document.getElementById('section' + currentSection).classList.remove('active');
+            currentSection--;
+            document.getElementById('section' + currentSection).classList.add('active');
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        document.getElementById('securityScore').addEventListener('input', function() {
+            const score = parseFloat(this.value);
+            if (score >= 0 && score <= 100) {
+                const preview = document.getElementById('scorePreview');
+                const display = document.getElementById('scoreDisplay');
+                const label = document.getElementById('scoreLabel');
+                
+                preview.style.display = 'block';
+                display.textContent = score.toFixed(2) + '%';
+                
+                const scoreInfo = getScoreInfo(score);
+                display.className = 'score-value ' + scoreInfo.class;
+                label.textContent = scoreInfo.label;
+                label.className = 'score-label ' + scoreInfo.class;
+            }
+        });
+
+        function getScoreInfo(score) {
+            if (score >= 90) {
+                return {
+                    class: 'score-excellent',
+                    label: '🟢 Excellent Security Posture',
+                    description: 'Outstanding performance with minimal vulnerabilities.',
+                    color: '22c55e'
+                };
+            } else if (score >= 75) {
+                return {
+                    class: 'score-strong',
+                    label: '🟩 Strong Security Posture',
+                    description: 'Good overall security with areas for improvement.',
+                    color: '7AC143'
+                };
+            } else if (score >= 60) {
+                return {
+                    class: 'score-moderate',
+                    label: '🟨 Moderate Security Posture',
+                    description: 'Adequate security but some improvements are recommended.',
+                    color: 'FFB81C'
+                };
+            } else if (score >= 40) {
+                return {
+                    class: 'score-needs-improvement',
+                    label: '🟧 Needs Improvement',
+                    description: 'Several security gaps identified; action is advised.',
+                    color: 'FF6B35'
+                };
+            } else {
+                return {
+                    class: 'score-critical',
+                    label: '🔴 Critical Attention Needed',
+                    description: 'Significant vulnerabilities present; immediate remediation required.',
+                    color: 'E63946'
+                };
+            }
+        }
+
+        function displayReviewSummary() {
+            const summary = document.getElementById('reviewSummary');
+            const scoreInfo = getScoreInfo(assessmentData.securityScore);
+            
+            summary.innerHTML = `
+                <h3 style="color: var(--danone-blue); margin-bottom: 15px;">Assessment Summary</h3>
+                <p><strong>Vendor:</strong> ${assessmentData.vendorName}</p>
+                <p><strong>Application:</strong> ${assessmentData.applicationName}</p>
+                <p><strong>Category:</strong> ${assessmentData.applicationCategory}</p>
+                <p><strong>Deployment Status:</strong> ${assessmentData.deploymentStatus}</p>
+                <p><strong>Application Criticality:</strong> ${assessmentData.applicationCriticality}</p>
+                <p><strong>Security Score:</strong> <span style="color: #${scoreInfo.color}; font-weight: bold; font-size: 20px;">${assessmentData.securityScore.toFixed(2)}%</span></p>
+                <p><strong>Overall Posture:</strong> ${assessmentData.overallPosture}</p>
+                <p><strong>Risks Identified:</strong> ${assessmentData.risksIdentified} (Critical: ${assessmentData.criticalRisks}, High: ${assessmentData.highRisks}, Medium: ${assessmentData.mediumRisks}, Low: ${assessmentData.lowRisks})</p>
+            `;
+        }
+
+        // ====== POWERPOINT GENERATION WITH LAYOUT-SAFE BUILDER ======
+        
+        async function generatePowerPoint() {
+            // Show loading indicator
+            document.getElementById('loadingIndicator').classList.add('active');
+            document.getElementById('generateBtn').disabled = true;
+            
+            try {
+                // Check if PptxGenJS is loaded
+                if (typeof PptxGenJS === 'undefined') {
+                    throw new Error('PptxGenJS library not loaded. Please refresh the page and try again.');
+                }
+                
+                const pptx = new PptxGenJS();
+                
+                // Set presentation properties
+                pptx.layout = 'LAYOUT_WIDE'; // 13.33" x 7.5"
+                pptx.author = assessmentData.assessorName;
+                pptx.company = 'Danone';
+                pptx.title = `Application Risk Assessment - ${assessmentData.applicationName}`;
+                pptx.subject = 'Vendor Security Assessment';
+                
+                // Create Executive Summary Slide
+                await createExecutiveSummarySlide(pptx);
+                
+                // Generate and download
+                const fileName = `Vendor_Security_Assessment_${assessmentData.vendorName.replace(/[^a-z0-9]/gi, '_')}_${assessmentData.assessmentDate}.pptx`;
+                await pptx.writeFile({ fileName });
+                
+                alert('PowerPoint generated successfully!');
+            } catch (error) {
+                console.error('Error generating PowerPoint:', error);
+                alert('Error generating PowerPoint: ' + error.message);
+            } finally {
+                // Hide loading indicator
+                document.getElementById('loadingIndicator').classList.remove('active');
+                document.getElementById('generateBtn').disabled = false;
+            }
+        }
+
+        async function createExecutiveSummarySlide(pptx) {
+            const slide = pptx.addSlide();
+            
+            // Define colors
+            const COLORS = {
+                blue: '0055A5',
+                lightBlue: '00A3E0',
+                white: 'FFFFFF',
+                lightGray: 'F5F5F5',
+                gray: 'E0E0E0',
+                darkGray: '666666',
+                black: '000000'
+            };
+            
+            // Leave space for header (0.75 inch from top) and footer (0.75 inch from bottom)
+            const contentTop = 0.75;
+            const contentBottom = 6.75;
+            
+            // Title
+            slide.addText('Application Risk Assessment - Executive Summary', {
+                x: 0.5,
+                y: contentTop,
+                w: 12.33,
+                h: 0.5,
+                fontSize: 28,
+                bold: true,
+                color: COLORS.blue,
+                align: 'left'
+            });
+            
+            // Application Overview Box
+            slide.addShape(pptx.ShapeType.rect, {
+                x: 0.5,
+                y: contentTop + 0.7,
+                w: 7.5,
+                h: 3.2,
+                fill: { color: COLORS.lightGray },
+                line: { color: COLORS.gray, width: 1 }
+            });
+            
+            // Application Overview Title
+            slide.addText('Application Overview', {
+                x: 0.6,
+                y: contentTop + 0.8,
+                w: 7.3,
+                h: 0.4,
+                fontSize: 18,
+                bold: true,
+                color: COLORS.black,
+                align: 'center'
+            });
+            
+            // Underline
+            slide.addShape(pptx.ShapeType.line, {
+                x: 1.5,
+                y: contentTop + 1.25,
+                w: 5.5,
+                h: 0,
+                line: { color: COLORS.lightBlue, width: 2 }
+            });
+            
+            // Application Overview Content
+            const appOverviewText = `${assessmentData.applicationName} (provided by ${assessmentData.vendorName}) is a ${assessmentData.applicationCategory.toLowerCase()} used by Danone. ${assessmentData.applicationDescription}\n\nCurrent Deployment Status: ${assessmentData.deploymentDetails}\n\nVendor Profile:\n• ${assessmentData.vendorDescription}\n• ${assessmentData.vendorCustomerBase}\n• ${assessmentData.vendorIndustryFocus}\n• ${assessmentData.vendorSolutionDetails}`;
+            
+            slide.addText(appOverviewText, {
+                x: 0.7,
+                y: contentTop + 1.4,
+                w: 7.1,
+                h: 2.4,
+                fontSize: 11,
+                color: COLORS.black,
+                align: 'left',
+                valign: 'top'
+            });
+            
+            // Security Score Box
+            slide.addShape(pptx.ShapeType.rect, {
+                x: 8.3,
+                y: contentTop + 0.7,
+                w: 4.5,
+                h: 2.5,
+                fill: { color: COLORS.white },
+                line: { color: COLORS.gray, width: 1 }
+            });
+            
+            // Security Score Title
+            slide.addText('Security Score:', {
+                x: 8.3,
+                y: contentTop + 0.85,
+                w: 4.5,
+                h: 0.4,
+                fontSize: 20,
+                bold: true,
+                color: COLORS.black,
+                align: 'center'
+            });
+            
+            // Security Score Value
+            const scoreInfo = getScoreInfo(assessmentData.securityScore);
+            
+            slide.addText(assessmentData.securityScore.toFixed(2) + '%', {
+                x: 8.3,
+                y: contentTop + 1.35,
+                w: 4.5,
+                h: 0.8,
+                fontSize: 48,
+                bold: true,
+                color: scoreInfo.color,
+                align: 'center'
+            });
+            
+            // Risk Register Reference
+            if (assessmentData.riskRegisterId) {
+                slide.addText(`Results of the Application Risk Assessment\nare tracked within Risk Register under:\n${assessmentData.riskRegisterId}`, {
+                    x: 8.4,
+                    y: contentTop + 2.3,
+                    w: 4.3,
+                    h: 0.7,
+                    fontSize: 10,
+                    color: COLORS.black,
+                    align: 'center'
+                });
+            }
+            
+            // Security Score Legend Box
+            slide.addShape(pptx.ShapeType.rect, {
+                x: 8.3,
+                y: contentTop + 3.3,
+                w: 4.5,
+                h: 2.6,
+                fill: { color: COLORS.white },
+                line: { color: COLORS.gray, width: 1 }
+            });
+            
+            // Legend entries
+            const legendEntries = [
+                { range: '100% - 90%:', emoji: '🟢', label: 'Excellent Security Posture', desc: 'Outstanding performance with minimal vulnerabilities.' },
+                { range: '89% - 75%:', emoji: '🟩', label: 'Strong Security Posture', desc: 'Good overall security with areas for improvement.' },
+                { range: '74% - 60%:', emoji: '🟨', label: 'Moderate Security Posture', desc: 'Adequate security but some improvements are recommended.' },
+                { range: '59% - 40%:', emoji: '🟧', label: 'Needs Improvement', desc: 'Several security gaps identified; action is advised.' },
+                { range: 'Below 40%:', emoji: '🔴', label: 'Critical Attention Needed', desc: 'Significant vulnerabilities present; immediate remediation required.' }
+            ];
+            
+            let legendY = contentTop + 3.45;
+            legendEntries.forEach(entry => {
+                slide.addText(`${entry.range} ${entry.emoji} ${entry.label}\n${entry.desc}`, {
+                    x: 8.4,
+                    y: legendY,
+                    w: 4.3,
+                    h: 0.45,
+                    fontSize: 8,
+                    color: COLORS.black,
+                    align: 'left'
+                });
+                legendY += 0.5;
+            });
+            
+            // Assessment Summary Box
+            slide.addShape(pptx.ShapeType.rect, {
+                x: 0.5,
+                y: contentTop + 4.0,
+                w: 7.5,
+                h: 1.2,
+                fill: { color: COLORS.lightGray },
+                line: { color: COLORS.gray, width: 1 }
+            });
+            
+            // Assessment Summary Title
+            slide.addText('Assessment Summary', {
+                x: 0.6,
+                y: contentTop + 4.1,
+                w: 7.3,
+                h: 0.35,
+                fontSize: 18,
+                bold: true,
+                color: COLORS.black,
+                align: 'center'
+            });
+            
+            // Underline
+            slide.addShape(pptx.ShapeType.line, {
+                x: 2.0,
+                y: contentTop + 4.5,
+                w: 4.5,
+                h: 0,
+                line: { color: COLORS.lightBlue, width: 2 }
+            });
+            
+            // Risk summary text
+            const riskParts = [];
+            if (assessmentData.criticalRisks > 0) riskParts.push(`${assessmentData.criticalRisks} critical`);
+            if (assessmentData.highRisks > 0) riskParts.push(`${assessmentData.highRisks} high`);
+            if (assessmentData.mediumRisks > 0) riskParts.push(`${assessmentData.mediumRisks} medium`);
+            if (assessmentData.lowRisks > 0) riskParts.push(`${assessmentData.lowRisks} low`);
+            
+            const riskSummary = `The overall security posture has been assessed as ${assessmentData.overallPosture.toLowerCase()}, with Risk Management identifying ${assessmentData.risksIdentified} risks:\n${riskParts.join(', ')}.`;
+            
+            slide.addText(riskSummary, {
+                x: 0.7,
+                y: contentTop + 4.6,
+                w: 7.1,
+                h: 0.5,
+                fontSize: 11,
+                bold: true,
+                color: COLORS.black,
+                align: 'center',
+                valign: 'middle'
+            });
+            
+            // CIA Triad Box
+            slide.addShape(pptx.ShapeType.rect, {
+                x: 0.5,
+                y: contentTop + 5.3,
+                w: 7.5,
+                h: 0.8,
+                fill: { color: COLORS.white },
+                line: { color: COLORS.gray, width: 1 }
+            });
+            
+            const integrityShort = assessmentData.integrityLevel.split(' - ')[0];
+            const availabilityShort = assessmentData.availabilityLevel.split(' - ')[0];
+            
+            slide.addText(`• Data Confidentiality Level: ${assessmentData.confidentialityLevel}\n• Availability Level: ${availabilityShort}\n• Data Integrity: ${integrityShort}`, {
+                x: 0.7,
+                y: contentTop + 5.4,
+                w: 7.1,
+                h: 0.6,
+                fontSize: 11,
+                bold: true,
+                color: COLORS.black,
+                align: 'left'
+            });
+            
+            // Application Criticality Footer
+            slide.addText(`Application criticality: ${assessmentData.applicationCriticality} (as declared by Application Owner)`, {
+                x: 0.5,
+                y: contentBottom - 0.4,
+                w: 12.33,
+                h: 0.4,
+                fontSize: 18,
+                bold: true,
+                color: COLORS.lightBlue,
+                align: 'center'
+            });
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
